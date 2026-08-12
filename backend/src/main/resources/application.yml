@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/requestflow}
+    username: ${SPRING_DATASOURCE_USERNAME:requestflow}
+    password: ${SPRING_DATASOURCE_PASSWORD:requestflow}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET:requestflow-dev-secret-key-0123456789abcdef0123456789abcdef}
+    expiration: ${APP_JWT_EXPIRATION:86400000}

@@ -1,0 +1,417 @@
+openapi: 3.0.3
+info:
+  title: RequestFlow Mini API
+  description: |
+    API системы регистрации и исполнения заявок.
+
+    Сценарий работы:
+    1. Пользователь создаёт заявку.
+    2. Руководитель назначает исполнителя.
+    3. Исполнитель видит заявку.
+    4. Исполнитель меняет статус на «В работе».
+    5. После выполнения переводит её в статус «Выполнена».
+    6. Система сохраняет историю изменений.
+  version: 1.0.0
+tags:
+  - name: auth
+    description: Авторизация
+  - name: requests
+    description: Работа с заявками
+paths:
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: Авторизация пользователя
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Успешная авторизация
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Неверные учётные данные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /requests:
+    post:
+      tags:
+        - requests
+      summary: Создать заявку
+      operationId: createRequest
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestCreate'
+      responses:
+        '201':
+          description: Заявка создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+        '400':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      tags:
+        - requests
+      summary: Получить список заявок
+      description: |
+        MANAGER видит все заявки, EXECUTOR — назначенные ему.
+      operationId: getRequests
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          description: Фильтр по статусу
+          required: false
+          schema:
+            $ref: '#/components/schemas/RequestStatus'
+      responses:
+        '200':
+          description: Список заявок
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Request'
+        '401':
+          description: Не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /requests/{id}:
+    get:
+      tags:
+        - requests
+      summary: Получить заявку по идентификатору
+      operationId: getRequestById
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+      responses:
+        '200':
+          description: Заявка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+        '401':
+          description: Не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Заявка не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /requests/{id}/assignee:
+    patch:
+      tags:
+        - requests
+      summary: Назначить исполнителя
+      description: Доступно только для роли MANAGER.
+      operationId: assignRequest
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssigneeUpdate'
+      responses:
+        '200':
+          description: Исполнитель назначен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+        '400':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Заявка или исполнитель не найдены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /requests/{id}/status:
+    patch:
+      tags:
+        - requests
+      summary: Изменить статус заявки
+      description: Доступно назначенному исполнителю (EXECUTOR).
+      operationId: updateRequestStatus
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatusUpdate'
+      responses:
+        '200':
+          description: Статус обновлён
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+        '400':
+          description: Недопустимый переход статуса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Недостаточно прав
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Заявка не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /requests/{id}/history:
+    get:
+      tags:
+        - requests
+      summary: Получить историю изменений заявки
+      operationId: getRequestHistory
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+      responses:
+        '200':
+          description: История изменений (от новых к старым)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RequestHistory'
+        '401':
+          description: Не авторизован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Заявка не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  parameters:
+    RequestId:
+      name: id
+      in: path
+      required: true
+      description: Идентификатор заявки
+      schema:
+        type: integer
+        format: int64
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: manager1
+        password:
+          type: string
+          format: password
+          example: secret
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWT-токен для заголовка Authorization
+        user:
+          $ref: '#/components/schemas/User'
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        role:
+          $ref: '#/components/schemas/Role'
+    Role:
+      type: string
+      enum:
+        - MANAGER
+        - EXECUTOR
+    RequestStatus:
+      type: string
+      description: |
+        Статусы заявки:
+        - `NEW` — новая;
+        - `ASSIGNED` — назначен исполнитель;
+        - `IN_PROGRESS` — в работе;
+        - `COMPLETED` — выполнена.
+      enum:
+        - NEW
+        - ASSIGNED
+        - IN_PROGRESS
+        - COMPLETED
+    RequestPriority:
+      type: string
+      enum:
+        - LOW
+        - MEDIUM
+        - HIGH
+    RequestCreate:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          maxLength: 255
+          example: Не работает принтер
+        description:
+          type: string
+          example: Принтер в кабинете 204 не печатает документы.
+        priority:
+          $ref: '#/components/schemas/RequestPriority'
+    Request:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        description:
+          type: string
+        priority:
+          $ref: '#/components/schemas/RequestPriority'
+        status:
+          $ref: '#/components/schemas/RequestStatus'
+        createdBy:
+          $ref: '#/components/schemas/User'
+        assignedTo:
+          $ref: '#/components/schemas/User'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    AssigneeUpdate:
+      type: object
+      required:
+        - assigneeId
+      properties:
+        assigneeId:
+          type: integer
+          format: int64
+          description: Идентификатор исполнителя (роль EXECUTOR)
+    StatusUpdate:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          $ref: '#/components/schemas/RequestStatus'
+    RequestHistory:
+      type: object
+      description: Запись истории изменений заявки
+      properties:
+        id:
+          type: integer
+          format: int64
+        requestId:
+          type: integer
+          format: int64
+        changedBy:
+          $ref: '#/components/schemas/User'
+        oldStatus:
+          $ref: '#/components/schemas/RequestStatus'
+        newStatus:
+          $ref: '#/components/schemas/RequestStatus'
+        comment:
+          type: string
+        changedAt:
+          type: string
+          format: date-time
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Request not found

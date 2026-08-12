@@ -68,6 +68,25 @@
 - `IN_PROGRESS`
 - `COMPLETED`
 
+## Запуск
+
+1. Скопируйте пример переменных окружения:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Запустите приложение и базу данных через Docker Compose:
+
+   ```bash
+   docker-compose up --build
+   ```
+
+3. После успешного запуска:
+   - backend API доступен по адресу: http://localhost:8080
+   - документация Swagger UI: http://localhost:8080/swagger-ui/index.html
+   - база данных PostgreSQL доступна на порту `5432`
+
 ## API
 
 ```
