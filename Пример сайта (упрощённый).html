@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Портфолио — Травушкин Иван Николаевич</title>
+
+    <!-- Подключаем шрифт из Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome для иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        /* ===== ГЛОБАЛЬНЫЕ СТИЛИ ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0d15;
+            color: #e5e7eb;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ===== АНИМАЦИЯ ===== */
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-on-load {
+            animation: fadeUp 0.8s ease forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.25s; }
+        .delay-3 { animation-delay: 0.4s; }
+        .delay-4 { animation-delay: 0.55s; }
+        .delay-5 { animation-delay: 0.7s; }
+
+        /* ===== ШАПКА ===== */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #1e293b;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav a {
+            color: #94a3b8;
+            text-decoration: none;
+            margin-left: 28px;
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #ffffff;
+        }
+
+        /* ===== ГЕРОЙ ===== */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            padding: 60px 0 30px;
+            flex-wrap: wrap;
+        }
+
+        .hero-text {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .hero-text .badge {
+            display: inline-block;
+            background: #1e293b;
+            color: #c084fc;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 14px;
+            letter-spacing: 0.3px;
+        }
+
+        .hero-text h1 {
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 16px;
+        }
+
+        .hero-text h1 span {
+            background: linear-gradient(135deg, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-text p {
+            color: #94a3b8;
+            font-size: 18px;
+            max-width: 460px;
+            margin-bottom: 28px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #818cf8;
+            color: #0b0d15;
+            padding: 12px 32px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #a78bfa;
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(129, 140, 248, 0.35);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #e5e7eb;
+            border: 1px solid #334155;
+            margin-left: 12px;
+        }
+
+        .btn-outline:hover {
+            background: #1e293b;
+            border-color: #818cf8;
+        }
+
+        .hero-avatar {
+            flex-shrink: 0;
+            width: 260px;
+            height: 260px;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            color: #818cf8;
+            border: 3px solid #334155;
+            transition: 0.4s;
+        }
+
+        .hero-avatar:hover {
+            border-color: #818cf8;
+            transform: scale(1.02);
+        }
+
+        /* ===== СЕКЦИИ ===== */
+        section {
+            padding: 60px 0 30px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            letter-spacing: -0.3px;
+        }
+
+        .section-title span {
+            background: linear-gradient(135deg, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ===== НАВЫКИ ===== */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 18px;
+        }
+
+        .skill-card {
+            background: #13161f;
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+            padding: 20px 12px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .skill-card:hover {
+            border-color: #818cf8;
+            transform: translateY(-4px);
+        }
+
+        .skill-card i {
+            font-size: 32px;
+            color: #818cf8;
+            margin-bottom: 10px;
+        }
+
+        .skill-card span {
+            display: block;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        /* ===== ПРОЕКТЫ ===== */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .project-card {
+            background: #13161f;
+            border: 1px solid #1e293b;
+            border-radius: 20px;
+            padding: 24px 20px;
+            transition: 0.3s;
+        }
+
+        .project-card:hover {
+            border-color: #818cf8;
+            transform: translateY(-6px);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+        }
+
+        .project-card h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .project-card p {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .project-tag {
+            display: inline-block;
+            background: #1e293b;
+            color: #c084fc;
+            font-size: 12px;
+            padding: 2px 14px;
+            border-radius: 30px;
+            margin-right: 6px;
+        }
+
+        .project-link {
+            display: inline-block;
+            margin-top: 14px;
+            color: #818cf8;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .project-link i {
+            margin-left: 6px;
+            transition: 0.3s;
+        }
+
+        .project-link:hover i {
+            transform: translateX(4px);
+        }
+
+        /* ===== КОНТАКТЫ ===== */
+        .contacts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px 32px;
+            margin-top: 10px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .contact-item:hover {
+            color: #ffffff;
+        }
+
+        .contact-item i {
+            font-size: 22px;
+            color: #818cf8;
+            width: 28px;
+            text-align: center;
+        }
+
+        /* ===== ПОДВАЛ ===== */
+        footer {
+            border-top: 1px solid #1e293b;
+            padding: 28px 0 10px;
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .social-icons a {
+            color: #64748b;
+            margin-left: 18px;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: #c084fc;
+        }
+
+        /* ===== АДАПТИВНОСТЬ ===== */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            nav a {
+                margin-left: 0;
+                margin-right: 18px;
+            }
+            .hero {
+                flex-direction: column-reverse;
+                text-align: center;
+                padding-top: 20px;
+            }
+            .hero-text p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-text h1 {
+                font-size: 32px;
+            }
+            .hero-avatar {
+                width: 180px;
+                height: 180px;
+                font-size: 56px;
+            }
+            .btn-outline {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+            .section-title {
+                font-size: 24px;
+            }
+            footer {
+                flex-direction: column;
+                gap: 12px;
+                align-items: center;
+            }
+            .social-icons a {
+                margin: 0 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+            .hero-text h1 {
+                font-size: 26px;
+            }
+            .skills-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- ============ ШАПКА ============ -->
+        <header class="animate-on-load delay-1">
+            <div class="logo">👨‍💻 Травушкин Иван</div>
+            <nav>
+                <a href="#about">Обо мне</a>
+                <a href="#skills">Навыки</a>
+                <a href="#projects">Проекты</a>
+                <a href="#contacts">Контакты</a>
+            </nav>
+        </header>
+
+        <!-- ============ ГЕРОЙ ============ -->
+        <section class="hero animate-on-load delay-2">
+            <div class="hero-text">
+                <span class="badge">🚀 Открыт к сотрудничеству</span>
+                <h1>
+                    Привет, я <br />
+                    <span>Иван Травушкин</span>
+                </h1>
+                <p>
+                    Веб-разработчик с опытом создания современных,
+                    быстрых и адаптивных сайтов под любые задачи.
+                </p>
+                <div>
+                    <a href="#projects" class="btn">Смотреть проекты</a>
+                    <a href="#contacts" class="btn btn-outline">Написать мне</a>
+                </div>
+            </div>
+            <div class="hero-avatar">
+                <i class="fas fa-user-astronaut"></i>
+            </div>
+        </section>
+
+        <!-- ============ ОБО МНЕ ============ -->
+        <section id="about" class="animate-on-load delay-3">
+            <h2 class="section-title">📋 <span>Обо мне</span></h2>
+            <p style="max-width: 720px; color: #94a3b8; font-size: 17px;">
+                Я Иван Травушкин — веб-разработчик из Москвы. Специализируюсь на
+                создании пользовательских интерфейсов на <strong style="color:#e5e7eb;">React</strong> и
+                <strong style="color:#e5e7eb;">Vue.js</strong>. Люблю чистый код,
+                продуманный UX и минималистичный дизайн.
+                <br /><br />
+                В работе ценю внимание к деталям, а в жизни — путешествия, чтение
+                технической литературы и настольные игры. Постоянно учусь новому
+                и применяю современные подходы в своих проектах.
+            </p>
+        </section>
+
+        <!-- ============ НАВЫКИ ============ -->
+        <section id="skills" class="animate-on-load delay-3">
+            <h2 class="section-title">⚙️ <span>Мои навыки</span></h2>
+            <div class="skills-grid">
+
+                <div class="skill-card">
+                    <i class="fab fa-html5"></i>
+                    <span>HTML5</span>
+                </div>
+
+                <div class="skill-card">
+                    <i class="fab fa-css3-alt"></i>
+                    <span>CSS3</span>
+                </div>
+
+                <div class="skill-card">
+                    <i class="fab fa-js"></i>
+                    <span>JavaScript</span>
+                </div>
+
+                <div class="skill-card">
+                    <i class="fab fa-react"></i>
+                    <span>React</span>
+                </div>
+
+                <div class="skill-card">
+                    <i class="fab fa-vuejs"></i>
+                    <span>Vue.js</span>
+                </div>
+
+                <div class="skill-card">
+                    <i class="fab fa-git-alt"></i>
+                    <span>Git</span>
+                </div>
+
+                <div class="skill-card">
+                    <i class="fas fa-database"></i>
+                    <span>SQL / MongoDB</span>
+                </div>
+
+                <div class="skill-card">
+                    <i class="fas fa-pencil-ruler"></i>
+                    <span>Figma</span>
+                </div>
+
+                <div class="skill-card">
+                    <i class="fas fa-server"></i>
+                    <span>Node.js</span>
+                </div>
+
+                <div class="skill-card">
+                    <i class="fab fa-docker"></i>
+                    <span>Docker</span>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============ ПРОЕКТЫ ============ -->
+        <section id="projects" class="animate-on-load delay-4">
+            <h2 class="section-title">💼 <span>Мои проекты</span></h2>
+            <div class="projects-grid">
+
+                <div class="project-card">
+                    <h3>Прогноз погоды</h3>
+                    <p>Интерактивный сервис с картой и визуализацией данных о погоде.</p>
+                    <span class="project-tag">React</span>
+                    <span class="project-tag">Node.js</span>
+                    <br />
+                    <a href="#" class="project-link">
+                        Посмотреть <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="project-card">
+                    <h3>Кулинарный блог</h3>
+                    <p>Сайт с рецептами, удобной фильтрацией и адаптивным дизайном.</p>
+                    <span class="project-tag">Vue</span>
+                    <span class="project-tag">Vite</span>
+                    <br />
+                    <a href="#" class="project-link">
+                        Посмотреть <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="project-card">
+                    <h3>TaskFlow</h3>
+                    <p>Канбан-доска для управления задачами с авторизацией и базой данных.</p>
+                    <span class="project-tag">React</span>
+                    <span class="project-tag">Express</span>
+                    <br />
+                    <a href="#" class="project-link">
+                        Посмотреть <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ============ КОНТАКТЫ ============ -->
+        <section id="contacts" class="animate-on-load delay-5">
+            <h2 class="section-title">📬 <span>Свяжитесь со мной</span></h2>
+            <div class="contacts">
+
+                <a href="mailto:75travushkin@gmail.com" class="contact-item">
+                    <i class="fas fa-envelope"></i> 75travushkin@gmail.com
+                </a>
+
+                <a href="tel:+79001234567" class="contact-item">
+                    <i class="fas fa-phone-alt"></i> +7 (900) 123-45-67
+                </a>
+
+                <a href="#" class="contact-item">
+                    <i class="fab fa-telegram"></i> @ivan_travushkin
+                </a>
+
+                <a href="#" class="contact-item">
+                    <i class="fab fa-github"></i> github.com/ivan-travushkin
+                </a>
+
+            </div>
+        </section>
+
+        <!-- ============ ПОДВАЛ ============ -->
+        <footer>
+            <span>© 2026 Травушкин Иван · Сделано с ❤️</span>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-telegram"></i></a>
+                <a href="#"><i class="fab fa-vk"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </footer>
+
+    </div>
+
+</body>
+</html>
